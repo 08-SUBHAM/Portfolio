@@ -1,0 +1,170 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Bodoni Moda", "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-washi: var(--washi);
+  --color-washi-deep: var(--washi-deep);
+  --color-vermilion: var(--vermilion);
+}
+
+:root {
+  --radius: 0.25rem;
+  --washi: oklch(0.95 0.018 80);
+  --washi-deep: oklch(0.9 0.028 78);
+  --ink: oklch(0.17 0.008 60);
+  --ink-soft: oklch(0.38 0.01 60);
+  --vermilion: oklch(0.6 0.2 33);
+  --background: var(--washi);
+  --foreground: var(--ink);
+  --card: oklch(0.97 0.014 82);
+  --card-foreground: var(--ink);
+  --popover: var(--washi);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--washi);
+  --secondary: var(--washi-deep);
+  --secondary-foreground: var(--ink);
+  --muted: var(--washi-deep);
+  --muted-foreground: oklch(0.45 0.012 60);
+  --accent: var(--vermilion);
+  --accent-foreground: oklch(0.98 0.01 80);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.17 0.008 60 / 14%);
+  --input: oklch(0.17 0.008 60 / 20%);
+  --ring: var(--vermilion);
+  --shadow-paper: 0 1px 0 oklch(1 0 0 / 60%) inset, 0 30px 60px -30px oklch(0.17 0.008 60 / 45%), 0 8px 20px -12px oklch(0.17 0.008 60 / 30%);
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.15 0 0 0 0 0.1 0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--vermilion); color: var(--washi); }
+  :focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+@utility grain {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: var(--grain);
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+}
+
+@utility paper {
+  background: var(--card);
+  box-shadow: var(--shadow-paper);
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+@utility mist {
+  background: linear-gradient(to top, var(--washi) 8%, color-mix(in oklab, var(--washi) 70%, transparent) 40%, transparent);
+}
+
+@keyframes drift {
+  0% { transform: translate3d(-4%, 0, 0); }
+  50% { transform: translate3d(4%, -1%, 0); }
+  100% { transform: translate3d(-4%, 0, 0); }
+}
+@utility animate-drift { animation: drift 28s ease-in-out infinite; }
+
+@keyframes ripple {
+  from { transform: translate(-50%, -50%) scale(0.2); opacity: 0.55; }
+  to { transform: translate(-50%, -50%) scale(3.2); opacity: 0; }
+}
+@utility animate-ripple { animation: ripple 0.9s ease-out forwards; }
+
+.playground-wash { background: transparent; color: var(--ink); }
+.playground-wash .playground-heading { color: var(--ink); }
+.playground-wash .playground-description { color: var(--ink-soft); }
+.hero-paint-art { position: absolute; inset: 0; pointer-events: none; }
+.hero-paint-art img { width: 100%; height: 100%; object-fit: cover; }
+.hero-name { font-size: 10rem; letter-spacing: 0; }
+.contact-email { font-size: 3.75rem; overflow-wrap: anywhere; }
+@media (min-width: 1600px) { .hero-name { font-size: 12rem; } }
+@media (max-width: 1023px) { .hero-name { font-size: 7rem; } }
+@media (max-width: 767px) {
+  .hero-name { font-size: 4.5rem; }
+  .contact-email { font-size: 1.5rem; }
+}
+@media (max-width: 380px) { .hero-name { font-size: 3.5rem; } }
+
+/* Mounted artwork and quiet reading surfaces, never masked together. */
+.art-mount { box-shadow: var(--shadow-paper); border: 1px solid var(--border); position: relative; }
+.tool-sheet { border-top: 2px solid var(--ink); border-bottom: 1px solid var(--border); background: color-mix(in oklab, var(--card) 65%, transparent); }
+.chapter-title { position: relative; }
+.chapter-title::after { content: ""; display: block; width: 65px; height: 5px; margin-top: 20px; background: var(--vermilion); mask-image: url("./assets/pigment-brush.png"); mask-size: 100% 100%; }
+.timeline-stroke { position: absolute; left: -8px; top: 0; height: 100%; width: 16px; color: var(--ink); opacity: 0.45; pointer-events: none; }
+.playground-wash figure figcaption { gap: 12px; align-items: baseline; flex-wrap: wrap; }
+
+/* Persistent painting: exact cover framing throughout loading/painting/resting. */
+.hero-paint-art .hero-fallback { object-position: 78% center; }
+.hero-fallback-hidden { visibility: hidden; }
+.hero-pigment-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.opening-skip { position: absolute; right: 24px; top: 24px; z-index: 20; color: var(--ink); background: color-mix(in oklab, var(--washi) 85%, transparent); }
+/* Page-wide ink mural: one fixed canvas behind every chapter, never over content. */
+.ink-mural { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.hero-seam { position: absolute; top: 0; left: 50%; width: 100vw; height: 24vh; translate: -50% 0; pointer-events: none; background: linear-gradient(var(--washi), color-mix(in oklab, var(--washi) 55%, transparent) 45%, transparent); }
+/* Quiet, opaque washi behind reading copy. Decorative pseudo-layer only: the copy itself is never masked. */
+.washi-patch { position: relative; isolation: isolate; }
+.washi-patch::before { content: ""; position: absolute; inset: -1.75rem -2.25rem; z-index: -1; pointer-events: none; background: color-mix(in oklab, var(--washi) 90%, transparent); border-radius: 46% 54% 42% 58% / 38% 46% 54% 62%; filter: blur(16px); }
+@media (max-width: 767px) { .washi-patch::before { inset: -1rem -0.9rem; filter: blur(10px); background: color-mix(in oklab, var(--washi) 93%, transparent); } }
+
+/* Wet pigment canvases are siblings of art only; never cover reading surfaces. */
+.wet-output { pointer-events: none; visibility: hidden; }
+.wet-art { position: relative; overflow: hidden; touch-action: pan-y; }
+.ink-mural:not(.wet-output), .wet-art.faded img { filter: saturate(.35) sepia(.18) contrast(.8) brightness(1.06); }
+.wet-art .wet-output { position: absolute; inset: 0; width: 100%; height: 100%; }
+@media (prefers-reduced-motion: reduce) { .wet-output { display: none; } }
