@@ -140,6 +140,7 @@ function ProjectOverlay({ project, onClose }: { project: Project; onClose: () =>
     const prev = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
     document.body.style.overflow = "hidden";
+    window.__lenis?.stop();
     const k = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
       if (e.key !== "Tab") return;
@@ -151,12 +152,18 @@ function ProjectOverlay({ project, onClose }: { project: Project; onClose: () =>
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
     };
     window.addEventListener("keydown", k);
-    return () => { window.removeEventListener("keydown", k); document.body.style.overflow = ""; prev?.focus(); };
+    return () => {
+      window.removeEventListener("keydown", k);
+      document.body.style.overflow = "";
+      window.__lenis?.start();
+      prev?.focus();
+    };
   }, [onClose]);
   return (
     <motion.div className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/70 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
       <motion.div
         role="dialog" aria-modal="true" aria-labelledby="case-title"
+        data-lenis-prevent
         className="paper relative max-h-[90vh] w-full max-w-4xl overflow-y-auto"
         initial={reduce ? false : { opacity: 0, y: 60, rotateX: 12, scale: 0.94 }} animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }} exit={{ opacity: 0, y: 30, scale: 0.97 }}
         transition={{ duration: reduce ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
