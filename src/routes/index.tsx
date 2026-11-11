@@ -9,6 +9,9 @@ import { HeroPaint } from "@/components/ink/hero-paint";
 import { InkMural } from "@/components/ink/ink-mural";
 import { Button } from "@/components/ui/button";
 import { WetArt } from "@/components/ink/wet-art";
+import { Navbar } from "@/components/ink/navbar";
+import { Footer } from "@/components/ink/footer";
+import { ArrowDown, ArrowUpRight, Maximize2 } from "lucide-react";
 
 const TITLE = "Subham Ghosh — Creative Developer & 3D Explorer";
 const DESC = "Portfolio of Subham Ghosh, frontend developer in Bengaluru, India — selected web work, experience, and 3D / game development explorations.";
@@ -27,37 +30,56 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+type RenderItem = { title: string; tool: string; src: string };
+
 function Index() {
   const [open, setOpen] = useState<Project | null>(null);
+  const [activeRender, setActiveRender] = useState<RenderItem | null>(null);
+
   return (
     <div className="grain relative min-h-screen overflow-x-clip">
       <a href="#work" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-ink focus:px-4 focus:py-2 focus:text-washi">Skip to content</a>
+      <Navbar />
       <InkMural />
       <main className="relative z-10">
         <Hero />
         <Work onOpen={setOpen} />
         <About />
-        <Playground />
+        <Playground onOpenRender={setActiveRender} />
         <Contact />
       </main>
+      <Footer />
       <AnimatePresence>{open && <ProjectOverlay project={open} onClose={() => setOpen(null)} />}</AnimatePresence>
+      <AnimatePresence>{activeRender && <RenderOverlay render={activeRender} onClose={() => setActiveRender(null)} />}</AnimatePresence>
     </div>
   );
 }
 
 function Hero() {
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (window.__lenis) {
+      window.__lenis.scrollTo(el || 0);
+    } else {
+      el?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section
       id="top"
-      className="relative flex min-h-[94svh] items-end overflow-hidden bg-background pt-40"
+      className="relative flex min-h-[96svh] items-end overflow-hidden bg-background pt-32 md:pt-40"
     >
       <HeroPaint />
       <div className="mist pointer-events-none absolute inset-x-[-10%] bottom-0 z-[1] h-4/5" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-12 md:px-10 md:pb-16">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-10 md:px-10 md:pb-14">
         <div className="mb-6 flex items-center gap-4">
           <Seal size={44} />
-          <p className="eyebrow text-ink-soft">{profile.location} · {profile.role}</p>
+          <div>
+            <p className="eyebrow text-ink-soft text-xs">{profile.location} · {profile.role}</p>
+            <p className="font-mono text-[0.68rem] text-vermilion mt-0.5">Creative Developer & 3D Explorer</p>
+          </div>
         </div>
         <h1 className="hero-name font-display font-medium leading-[0.9]">
           {["SUBHAM", "GHOSH"].map((w, i) => (
@@ -68,12 +90,67 @@ function Hero() {
             </span>
           ))}
         </h1>
-        <div className="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <p className="max-w-md text-base leading-relaxed text-ink-soft md:text-lg">{profile.intro}</p>
-          <div className="flex flex-wrap gap-3">
-            <a href="#work" className="bg-ink px-7 py-4 eyebrow text-washi transition-colors hover:bg-vermilion">View work</a>
-            <a href="#contact" className="border border-ink px-7 py-4 eyebrow transition-colors hover:border-vermilion hover:text-vermilion">Get in touch</a>
+        <div className="mt-8 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-xl">
+            <p className="text-base leading-relaxed text-ink-soft md:text-lg">{profile.intro}</p>
+            {/* Quick Specialization Tags */}
+            <div className="mt-5 flex flex-wrap gap-2">
+              {[
+                "Frontend Architecture",
+                "React & Vite",
+                "3D & Spatial Design",
+                "Applied ML & Healthcare",
+              ].map((spec) => (
+                <span
+                  key={spec}
+                  className="eyebrow border border-ink/20 bg-card/60 px-2.5 py-1 text-[0.65rem] text-ink"
+                >
+                  {spec}
+                </span>
+              ))}
+            </div>
           </div>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="#work"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollTo("work");
+              }}
+              className="bg-ink px-7 py-4 eyebrow text-washi transition-colors hover:bg-vermilion"
+            >
+              View work
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollTo("contact");
+              }}
+              className="border border-ink px-7 py-4 eyebrow transition-colors hover:border-vermilion hover:text-vermilion"
+            >
+              Get in touch
+            </a>
+          </div>
+        </div>
+
+        {/* Scroll Cue Indicator */}
+        <div className="mt-12 flex items-center justify-between border-t border-ink/10 pt-5">
+          <button
+            type="button"
+            onClick={() => scrollTo("work")}
+            className="group flex items-center gap-2 cursor-pointer text-ink-soft hover:text-vermilion transition-colors focus-visible:outline-none"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-vermilion opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-vermilion"></span>
+            </span>
+            <span className="eyebrow text-[0.68rem] tracking-wider">Scroll to explore</span>
+            <ArrowDown size={12} className="transition-transform group-hover:translate-y-0.5" />
+          </button>
+          <span className="eyebrow text-[0.65rem] text-ink/40 hidden sm:inline-block">
+            01 / 04 Selected Chapters
+          </span>
         </div>
       </div>
     </section>
@@ -116,15 +193,42 @@ function Work({ onOpen }: { onOpen: (p: Project) => void }) {
       </div>
 
       <Reveal className="washi-patch mt-28">
-        <p className="eyebrow mb-6 text-ink-soft">Other noteworthy projects</p>
+        <div className="flex items-center justify-between mb-6">
+          <p className="eyebrow text-ink-soft">Other noteworthy projects</p>
+          <span className="font-mono text-xs text-ink/40">Frontend / Interactive</span>
+        </div>
         <ul className="border-t border-ink/20">
           {otherProjects.map((o) => (
-            <li key={o.title} className="group flex flex-col gap-3 border-b border-ink/20 py-6 md:flex-row md:items-center md:justify-between">
-              <span className="font-display text-3xl transition-transform duration-500 group-hover:translate-x-3 md:text-4xl">{o.title}</span>
-              <span className="flex gap-6">
-                <a href={o.live} target="_blank" rel="noreferrer" className="eyebrow hover:text-vermilion">View project ↗</a>
-                <a href={o.code} target="_blank" rel="noreferrer" className="eyebrow hover:text-vermilion">Code ↗</a>
-              </span>
+            <li
+              key={o.title}
+              className="group flex flex-col gap-4 border-b border-ink/20 py-7 transition-colors hover:bg-card/40 px-2 -mx-2 md:flex-row md:items-center md:justify-between"
+            >
+              <div className="flex items-center gap-4">
+                <span className="h-2 w-2 rounded-full bg-ink/30 group-hover:bg-vermilion group-hover:scale-125 transition-all" />
+                <span className="font-display text-3xl transition-transform duration-500 group-hover:translate-x-2 md:text-4xl text-ink">
+                  {o.title}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 pl-6 md:pl-0">
+                <a
+                  href={o.live}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 border border-ink/20 bg-background px-4 py-2 eyebrow text-xs hover:border-vermilion hover:text-vermilion transition-colors"
+                >
+                  <span>Live Demo</span>
+                  <ArrowUpRight size={13} />
+                </a>
+                <a
+                  href={o.code}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 border border-ink/20 px-4 py-2 eyebrow text-xs hover:border-vermilion hover:text-vermilion transition-colors"
+                >
+                  <span>Code</span>
+                  <ArrowUpRight size={13} />
+                </a>
+              </div>
             </li>
           ))}
         </ul>
@@ -229,11 +333,11 @@ function About() {
   );
 }
 
-function Playground() {
+function Playground({ onOpenRender }: { onOpenRender: (render: RenderItem) => void }) {
   return (
     <section id="playground" className="playground-wash relative scroll-mt-20 overflow-hidden py-28 md:py-40">
       <div className="relative mx-auto max-w-7xl px-5 md:px-10">
-          <Reveal className="washi-patch mb-16">
+        <Reveal className="washi-patch mb-16">
           <p className="eyebrow text-vermilion">03 — Playground</p>
           <h2 className="playground-heading mt-3 font-display text-5xl leading-[0.95] md:text-7xl">Beyond the <em>browser.</em></h2>
         </Reveal>
@@ -247,10 +351,28 @@ function Playground() {
               {g.renders.map((r, i) => (
                 <div key={r.title}>
                   <TiltCard>
-                    <figure className={`art-mount group bg-card p-2 pb-4 text-ink ${i === 1 ? "md:translate-y-10" : ""}`}>
-                      <div className="overflow-hidden"><WetArt src={r.src} alt={`${r.title} 3D render`} className="aspect-[4/3] w-full" /></div>
-                      <figcaption className="mt-3 flex justify-between px-1"><span className="font-display">{r.title}</span><span className="eyebrow text-[0.6rem] text-vermilion">{r.tool}</span></figcaption>
-                    </figure>
+                    <button
+                      type="button"
+                      onClick={() => onOpenRender(r)}
+                      className="w-full text-left cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion"
+                      aria-label={`View full render: ${r.title}`}
+                    >
+                      <figure className={`art-mount bg-card p-2 pb-4 text-ink transition-transform duration-300 group-hover:shadow-lg ${i === 1 ? "md:translate-y-10" : ""}`}>
+                        <div className="relative overflow-hidden">
+                          <WetArt src={r.src} alt={`${r.title} 3D render`} className="aspect-[4/3] w-full" />
+                          <div className="absolute inset-0 bg-ink/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <span className="bg-washi/95 text-ink px-3 py-1.5 eyebrow text-[0.65rem] flex items-center gap-1.5 shadow-sm">
+                              <Maximize2 size={11} className="text-vermilion" />
+                              <span>Enlarge</span>
+                            </span>
+                          </div>
+                        </div>
+                        <figcaption className="mt-3 flex justify-between px-1">
+                          <span className="font-display group-hover:text-vermilion transition-colors">{r.title}</span>
+                          <span className="eyebrow text-[0.6rem] text-vermilion">{r.tool}</span>
+                        </figcaption>
+                      </figure>
+                    </button>
                   </TiltCard>
                 </div>
               ))}
@@ -259,6 +381,76 @@ function Playground() {
         ))}
       </div>
     </section>
+  );
+}
+
+function RenderOverlay({ render, onClose }: { render: RenderItem; onClose: () => void }) {
+  const reduce = useReducedMotion();
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    document.body.style.overflow = "hidden";
+    window.__lenis?.stop();
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+      window.__lenis?.start();
+      prev?.focus();
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[95] flex items-center justify-center bg-ink/80 p-4 backdrop-blur-md"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-label={render.title}
+        data-lenis-prevent
+        className="paper relative max-h-[92vh] w-full max-w-5xl overflow-hidden border border-ink/20 shadow-2xl"
+        initial={reduce ? false : { opacity: 0, scale: 0.95, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/5">
+          <img
+            src={render.src}
+            alt={render.title}
+            className="h-full w-full object-contain"
+          />
+        </div>
+        <div className="flex items-center justify-between border-t border-ink/10 bg-card p-5 px-6">
+          <div>
+            <span className="eyebrow text-[0.65rem] text-vermilion">{render.tool}</span>
+            <h4 className="font-display text-2xl text-ink mt-0.5">{render.title}</h4>
+          </div>
+          <Button
+            variant="ghost"
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            className="eyebrow hover:text-vermilion"
+          >
+            Close ✕
+          </Button>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
