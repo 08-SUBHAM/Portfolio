@@ -1,6 +1,6 @@
 // Editable portfolio content. Facts sourced from subhamghosh.in — do not add unverified claims.
-import mediguard from '@/assets/portfolio/MediGuard_AI.webp.asset.json';
-import agriboost from '@/assets/portfolio/agriboost.webp.asset.json';
+import mediguard from '@/assets/portfolio/MediGuard_AI.webp';
+import agriboost from '@/assets/portfolio/agriboost.webp';
 import door from '@/assets/portfolio/door.webp';
 import sea from '@/assets/portfolio/sea.webp';
 import jungle from '@/assets/portfolio/jungle.webp';
@@ -59,7 +59,7 @@ export const projects: Project[] = [
       "Full-stack app pairing a React interface with a Flask + TensorFlow backend.",
     ],
     stack: ["React", "Flask", "MongoDB", "Python", "TensorFlow"],
-    image: mediguard.url,
+    image: mediguard,
     live: "https://ckd-predictor-psi.vercel.app/",
     code: "https://github.com/08-SUBHAM/kidney-disease-prediction-backend",
   },
@@ -74,7 +74,7 @@ export const projects: Project[] = [
       "Built on a MERN-style stack with an Express API.",
     ],
     stack: ["React", "Node.js", "MongoDB", "Express"],
-    image: agriboost.url,
+    image: agriboost,
     live: "https://agriboost.onrender.com/",
     code: "https://github.com/08-SUBHAM/Agriboost",
   },

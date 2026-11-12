@@ -9,8 +9,6 @@ import { HeroPaint } from "@/components/ink/hero-paint";
 import { InkMural } from "@/components/ink/ink-mural";
 import { Button } from "@/components/ui/button";
 import { WetArt } from "@/components/ink/wet-art";
-import { Navbar } from "@/components/ink/navbar";
-import { Footer } from "@/components/ink/footer";
 import { ArrowDown, ArrowUpRight, Maximize2 } from "lucide-react";
 
 const TITLE = "Subham Ghosh — Creative Developer & 3D Explorer";
@@ -39,7 +37,6 @@ function Index() {
   return (
     <div className="grain relative min-h-screen overflow-x-clip">
       <a href="#work" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-ink focus:px-4 focus:py-2 focus:text-washi">Skip to content</a>
-      <Navbar />
       <InkMural />
       <main className="relative z-10">
         <Hero />
@@ -48,7 +45,6 @@ function Index() {
         <Playground onOpenRender={setActiveRender} />
         <Contact />
       </main>
-      <Footer />
       <AnimatePresence>{open && <ProjectOverlay project={open} onClose={() => setOpen(null)} />}</AnimatePresence>
       <AnimatePresence>{activeRender && <RenderOverlay render={activeRender} onClose={() => setActiveRender(null)} />}</AnimatePresence>
     </div>
