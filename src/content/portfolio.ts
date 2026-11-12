@@ -1,12 +1,13 @@
 // Editable portfolio content. Facts sourced from subhamghosh.in — do not add unverified claims.
 import mediguard from '@/assets/portfolio/MediGuard_AI.webp.asset.json';
 import agriboost from '@/assets/portfolio/agriboost.webp.asset.json';
-import door from '@/assets/portfolio/door.webp.asset.json';
-import sea from '@/assets/portfolio/sea.webp.asset.json';
-import jungle from '@/assets/portfolio/jungle.webp.asset.json';
-import house from '@/assets/portfolio/house.webp.asset.json';
-import indoor from '@/assets/portfolio/indoor.webp.asset.json';
-import outside from '@/assets/portfolio/outside.webp.asset.json';
+import door from '@/assets/portfolio/door.webp';
+import sea from '@/assets/portfolio/sea.webp';
+import jungle from '@/assets/portfolio/jungle.webp';
+import car from '@/assets/portfolio/car.jpg';
+import house from '@/assets/portfolio/house.webp';
+import indoor from '@/assets/portfolio/indoor.webp';
+import outside from '@/assets/portfolio/outside.webp';
 const R = "https://www.subhamghosh.in";
 
 export const profile = {
@@ -79,9 +80,26 @@ export const projects: Project[] = [
   },
 ];
 
-export const otherProjects = [
-  { title: "Rayban Landing Page", live: "https://rayban-blond.vercel.app/", code: "https://github.com/08-SUBHAM/Rayban" },
-  { title: "Two Good Co", live: "https://two-good-co-alpha-sooty.vercel.app/", code: "https://github.com/08-SUBHAM/TwoGoodCO/" },
+export type OtherProject = {
+  title: string;
+  live: string;
+  code: string;
+  video?: string;
+};
+
+export const otherProjects: OtherProject[] = [
+  {
+    title: "Rayban Landing Page",
+    live: "https://rayban-blond.vercel.app/",
+    code: "https://github.com/08-SUBHAM/Rayban",
+    video: "https://res.cloudinary.com/dpqgn0bpy/video/upload/v1794481520/rayban.mp4",
+  },
+  {
+    title: "Two Good Co",
+    live: "https://two-good-co-alpha-sooty.vercel.app/",
+    code: "https://github.com/08-SUBHAM/TwoGoodCO/",
+    video: "https://res.cloudinary.com/dpqgn0bpy/video/upload/v1794481520/twogoodco.mp4",
+  },
 ];
 
 export const stack = [
@@ -95,18 +113,19 @@ export const playground = {
     title: "3D Modeling",
     body: "Creating detailed environments and assets — a creative outlet that sharpens my sense of spatial design and visual composition.",
     renders: [
-      { title: "Door Scene", tool: "Unreal Engine", src: door.url },
-      { title: "Sea Scene", tool: "Blender", src: sea.url },
-      { title: "Jungle", tool: "Unreal Engine", src: jungle.url },
+      { title: "Door Scene", tool: "Unreal Engine", src: door },
+      { title: "Jungle", tool: "Unreal Engine", src: jungle },
+      { title: "Sea Scene", tool: "Blender", src: sea },
+      { title: "Vehicle Concept", tool: "Blender", src: car },
     ],
   },
   games: {
     title: "Game Development",
     body: "Developing game concepts with a focus on mechanics, functionality and system design — prototyping ideas and implementing core gameplay to test approaches.",
     renders: [
-      { title: "House of Hell — Exterior", tool: "Unreal Engine", src: house.url },
-      { title: "House of Hell — Interior", tool: "Unreal Engine", src: indoor.url },
-      { title: "House of Hell — Environment", tool: "Unreal Engine", src: outside.url },
+      { title: "House of Hell — Exterior", tool: "Unreal Engine", src: house },
+      { title: "House of Hell — Interior", tool: "Unreal Engine", src: indoor },
+      { title: "House of Hell — Environment", tool: "Unreal Engine", src: outside },
     ],
   },
 };

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import inkWash from "@/assets/ink-wash.jpg";
 import { experience, otherProjects, playground, profile, projects, stack, type Project } from "@/content/portfolio";
@@ -192,48 +192,136 @@ function Work({ onOpen }: { onOpen: (p: Project) => void }) {
         ))}
       </div>
 
-      <Reveal className="washi-patch mt-28">
-        <div className="flex items-center justify-between mb-6">
-          <p className="eyebrow text-ink-soft">Other noteworthy projects</p>
-          <span className="font-mono text-xs text-ink/40">Frontend / Interactive</span>
-        </div>
-        <ul className="border-t border-ink/20">
-          {otherProjects.map((o) => (
-            <li
-              key={o.title}
-              className="group flex flex-col gap-4 border-b border-ink/20 py-7 transition-colors hover:bg-card/40 px-2 -mx-2 md:flex-row md:items-center md:justify-between"
-            >
-              <div className="flex items-center gap-4">
-                <span className="h-2 w-2 rounded-full bg-ink/30 group-hover:bg-vermilion group-hover:scale-125 transition-all" />
-                <span className="font-display text-3xl transition-transform duration-500 group-hover:translate-x-2 md:text-4xl text-ink">
-                  {o.title}
-                </span>
-              </div>
-              <div className="flex items-center gap-4 pl-6 md:pl-0">
-                <a
-                  href={o.live}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 border border-ink/20 bg-background px-4 py-2 eyebrow text-xs hover:border-vermilion hover:text-vermilion transition-colors"
-                >
-                  <span>Live Demo</span>
-                  <ArrowUpRight size={13} />
-                </a>
-                <a
-                  href={o.code}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 border border-ink/20 px-4 py-2 eyebrow text-xs hover:border-vermilion hover:text-vermilion transition-colors"
-                >
-                  <span>Code</span>
-                  <ArrowUpRight size={13} />
-                </a>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </Reveal>
+      <OtherProjectsList />
     </section>
+  );
+}
+
+function OtherProjectsList() {
+  const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
+  const [nearTop, setNearTop] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const reduce = useReducedMotion();
+
+  // Smooth spring physics for floating preview window
+  const springConfig = { damping: 25, stiffness: 240, mass: 0.35 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (activeVideo && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(() => {});
+    }
+  }, [activeVideo?.url]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    mouseX.set(e.clientX);
+    mouseY.set(e.clientY);
+    const shouldBeBelow = e.clientY < 230;
+    if (shouldBeBelow !== nearTop) setNearTop(shouldBeBelow);
+  };
+
+  return (
+    <Reveal className="washi-patch mt-28">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <p className="eyebrow text-ink-soft">Other noteworthy projects</p>
+          <p className="font-mono text-xs text-ink/40 mt-1">Hover over a project to preview in motion</p>
+        </div>
+        <span className="font-mono text-xs text-vermilion hidden sm:inline-block">Interactive Work</span>
+      </div>
+      <ul className="relative border-t border-ink/20" onMouseMove={handleMouseMove}>
+        {otherProjects.map((o) => (
+          <li
+            key={o.title}
+            className="group relative flex flex-col gap-4 border-b border-ink/20 py-7 transition-colors hover:bg-card/40 px-2 -mx-2 md:flex-row md:items-center md:justify-between"
+            onMouseEnter={(e) => {
+              mouseX.set(e.clientX);
+              mouseY.set(e.clientY);
+              if (o.video) setActiveVideo({ url: o.video, title: o.title });
+            }}
+            onMouseLeave={() => setActiveVideo(null)}
+          >
+            <div className="flex items-center gap-4">
+              <span className="h-2 w-2 rounded-full bg-ink/30 group-hover:bg-vermilion group-hover:scale-125 transition-all" />
+              <span className="font-display text-3xl transition-transform duration-500 group-hover:translate-x-2 group-hover:text-vermilion md:text-4xl text-ink">
+                {o.title}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 pl-6 md:pl-0">
+              {o.video && (
+                <span className="hidden items-center gap-1.5 font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:inline-flex">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-vermilion" /> Hover Reel
+                </span>
+              )}
+              <a
+                href={o.live}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 border border-ink/20 bg-background px-4 py-2 eyebrow text-xs hover:border-vermilion hover:text-vermilion transition-colors"
+              >
+                <span>Live Demo</span>
+                <ArrowUpRight size={13} />
+              </a>
+              <a
+                href={o.code}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 border border-ink/20 px-4 py-2 eyebrow text-xs hover:border-vermilion hover:text-vermilion transition-colors"
+              >
+                <span>Code</span>
+                <ArrowUpRight size={13} />
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {/* Floating video preview that glides around the mouse cursor */}
+      {!reduce && (
+        <motion.div
+          className="pointer-events-none fixed left-0 top-0 z-[80] hidden md:block"
+          style={{ x: smoothX, y: smoothY }}
+        >
+          <AnimatePresence>
+            {activeVideo && (
+              <motion.div
+                key={activeVideo.url}
+                initial={{ opacity: 0, scale: 0.8, filter: "blur(4px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.82, filter: "blur(4px)" }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className={`art-mount paper overflow-hidden border border-ink/40 bg-card p-2 shadow-2xl transition-transform duration-150 ${
+                  nearTop ? "-translate-x-1/2 translate-y-6" : "-translate-x-1/2 -translate-y-[calc(100%+20px)]"
+                }`}
+                style={{ width: "320px" }}
+              >
+                <div className="relative aspect-video w-full overflow-hidden bg-ink/10">
+                  <video
+                    ref={videoRef}
+                    key={activeVideo.url}
+                    src={activeVideo.url}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="mt-2 flex items-center justify-between px-1">
+                  <span className="font-display text-xs font-medium text-ink">{activeVideo.title}</span>
+                  <span className="eyebrow text-[0.6rem] text-vermilion">Live Reel</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+    </Reveal>
   );
 }
 
@@ -347,7 +435,7 @@ function Playground({ onOpenRender }: { onOpenRender: (render: RenderItem) => vo
               <h3 className="playground-heading font-display text-3xl md:text-4xl">{g.title}</h3>
               <p className="playground-description leading-relaxed">{g.body}</p>
             </Reveal>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className={`grid gap-6 sm:grid-cols-2 ${g.renders.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
               {g.renders.map((r, i) => (
                 <div key={r.title}>
                   <TiltCard>
@@ -357,7 +445,7 @@ function Playground({ onOpenRender }: { onOpenRender: (render: RenderItem) => vo
                       className="w-full text-left cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion"
                       aria-label={`View full render: ${r.title}`}
                     >
-                      <figure className={`art-mount bg-card p-2 pb-4 text-ink transition-transform duration-300 group-hover:shadow-lg ${i === 1 ? "md:translate-y-10" : ""}`}>
+                      <figure className={`art-mount bg-card p-2 pb-4 text-ink transition-transform duration-300 group-hover:shadow-lg ${i % 2 === 1 ? "md:translate-y-6" : ""}`}>
                         <div className="relative overflow-hidden">
                           <WetArt src={r.src} alt={`${r.title} 3D render`} className="aspect-[4/3] w-full" />
                           <div className="absolute inset-0 bg-ink/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
