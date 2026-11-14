@@ -116,7 +116,7 @@ export const playground = {
       { title: "Door Scene", tool: "Unreal Engine", src: door },
       { title: "Jungle", tool: "Unreal Engine", src: jungle },
       { title: "Sea Scene", tool: "Blender", src: sea },
-      { title: "Vehicle Concept", tool: "Blender", src: car },
+      { title: "McLaren P1 in Underground Garage", tool: "Blender", src: car },
     ],
   },
   games: {
