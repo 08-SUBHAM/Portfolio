@@ -15,7 +15,8 @@ export const profile = {
   role: "Frontend Developer",
   location: "Bengaluru, India",
   email: "sonughosh0810@gmail.com",
-  cvUrl: `${R}/cv.html`,
+  cvUrl: "/resume.pdf",
+  resumeUrl: "/resume.pdf",
   intro:
     "Frontend developer building interfaces with care for architecture and visual composition — and exploring 3D environments and game systems on the side.",
   socials: [{ label: "GitHub", href: "https://github.com/08-SUBHAM" }],

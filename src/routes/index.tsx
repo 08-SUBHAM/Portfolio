@@ -551,7 +551,7 @@ function Contact() {
         <a href={`mailto:${profile.email}`} className="contact-email block font-display underline decoration-vermilion decoration-2 underline-offset-[10px] hover:text-vermilion">{profile.email}</a>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Button type="button" onClick={copy} className="h-auto rounded-none px-7 py-4 eyebrow hover:bg-vermilion">{copied ? "Copied ✓" : "Copy email"}</Button>
-          <a href={profile.cvUrl} target="_blank" rel="noreferrer" className="border border-ink px-7 py-4 eyebrow hover:text-vermilion">View CV ↗</a>
+          <a href={profile.resumeUrl || profile.cvUrl} target="_blank" rel="noreferrer" className="border border-ink px-7 py-4 eyebrow hover:text-vermilion">View Resume ↗</a>
           {profile.socials.map((s) => <a key={s.href} href={s.href} target="_blank" rel="noreferrer" className="border border-ink px-7 py-4 eyebrow hover:text-vermilion">{s.label} ↗</a>)}
           <span role="status" aria-live="polite" className="sr-only">{copied ? "Email copied to clipboard" : ""}</span>
         </div>
