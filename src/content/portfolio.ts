@@ -1,4 +1,5 @@
 // Editable portfolio content. Facts sourced from subhamghosh.in — do not add unverified claims.
+import potcity from '@/assets/portfolio/potcity.png';
 import mediguard from '@/assets/portfolio/MediGuard_AI.webp';
 import agriboost from '@/assets/portfolio/agriboost.webp';
 import door from '@/assets/portfolio/door.webp';
@@ -49,8 +50,24 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    id: "mediguard",
+    id: "potcity",
     index: "01",
+    title: "PotCity",
+    kind: "Smart City Infrastructure AI",
+    summary: "Intelligent urban infrastructure management system using AI-powered road damage detection, geospatial tracking, and autonomous simulation.",
+    details: [
+      "Integrates an Android edge AI detection application with real-time pothole identification and geospatial mapping.",
+      "Engineered a physics-based spatial scanning system to estimate pothole dimensions, prioritize critical fixes, and calculate repair costs.",
+      "Built a Unity-based 3D city simulation with autonomous survey and repair vehicle agents using BFS graph navigation.",
+      "Full-stack architecture pairing a Node.js and MongoDB backend with real-time operations monitoring.",
+    ],
+    stack: ["Android", "Unity", "C#", "Node.js", "MongoDB", "AI / Edge CV"],
+    image: potcity,
+    code: "https://github.com/08-SUBHAM/Potcity",
+  },
+  {
+    id: "mediguard",
+    index: "02",
     title: "MediGuard AI",
     kind: "Healthcare AI platform",
     summary: "Predicting chronic kidney disease stages with machine learning.",
@@ -66,7 +83,7 @@ export const projects: Project[] = [
   },
   {
     id: "agriboost",
-    index: "02",
+    index: "03",
     title: "AgriBoost",
     kind: "Agricultural e-commerce",
     summary: "Connecting farmers directly with consumers.",
